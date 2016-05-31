@@ -2,6 +2,7 @@
 STOKES项目的Python版本（脱机版本）
 
 Arguments:
+
 <-s , --standard>
 choose the file name of the standard data.
 
