@@ -236,7 +236,7 @@ class Polar(object):
 		}
 		cs2.add(self.cs2,style_cs2)
 		cs2.save(self.imgPath + self.sdataName + '_' + 'cs2')
-		# cs2.show()
+		cs2.show()
 
 		cs3 = spec.plot.Datagram({
 			'title' : 'modulation factor 3',
