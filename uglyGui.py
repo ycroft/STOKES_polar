@@ -151,9 +151,9 @@ class MainWidget(QtGui.QWidget):
             freq = 'high'
         else:
             freq = 'low'
-        urls = self.fpath_urls
-        mrls = self.fpath_mrls
-        mls = self.fpath_mls
+        urls = unicode(self.fpath_urls)
+        mrls = unicode(self.fpath_mrls)
+        mls = unicode(self.fpath_mls)
         conf = {
             'mf': mf,
             'ns': ns,
