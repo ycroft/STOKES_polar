@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 from matplotlib import figure
+from PyQt4 import QtCore
 import pylab
+
+class PlotWidget(QtCore.QThread):
+    def __init__(self,data,parent):
+        QtCore.QThread.__init__(self,parent)
+        self.x = data.getXaxis()
+        self.y = data.getYaxis()
+
+    def run(self):
+        pylab.plot(self.x, self.y, color='black', linestyle='-')
+        pylab.show()
 
 class Datagram(object):
     def __init__(self,baseConfig):
@@ -74,3 +85,11 @@ class Datagram(object):
                 linewidth=linewidth,linestyle=linestyle)
             pylab.legend(loc = 0)
         pylab.show()
+
+if __name__ == '__main__':
+    from PyQt4 import QtGui
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    pw = PlotWidget(app)
+    pw.start()
+    sys.exit(app.exec_())
