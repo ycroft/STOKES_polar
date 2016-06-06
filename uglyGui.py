@@ -8,6 +8,10 @@ import polar
 class MainWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self,parent)
+        self.fpath_mrls = ''
+        self.fpath_urls = ''
+        self.fpath_rls = ''
+
         self.setupUI()
 
     def setupUI(self):
@@ -61,8 +65,11 @@ class MainWidget(QtGui.QWidget):
         layout_main.addLayout(layout_buttons)
         self.setLayout(layout_main)
 
-        # 以下部分设置信号与槽
+        # 设置信号与槽
         self.connect(self.button_exit, QtCore.SIGNAL('clicked()'), QtGui.qApp, QtCore.SLOT('quit()'))
+        self.connect(self.button_fopen_mrefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMRLS()'))
+        self.connect(self.button_fopen_urefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseURLS()'))
+        self.connect(self.button_fopen_meassure, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMLS()'))
         self.connect(self.checkbox_mf, QtCore.SIGNAL('stateChanged(int)'), self, QtCore.SLOT('disableRefer()'))
 
     @QtCore.pyqtSlot()
@@ -70,6 +77,24 @@ class MainWidget(QtGui.QWidget):
         checked = self.checkbox_mf.isChecked()
         self.button_fopen_urefer.setEnabled(checked)
         self.button_fopen_mrefer.setEnabled(checked)
+        if checked:
+            self.label_isset_urefer.setText(u'未设置')
+            self.label_isset_mrefer.setText(u'未设置')
+        else:
+            self.label_isset_urefer.setText(u'已禁用')
+            self.label_isset_mrefer.setText(u'已禁用')
+
+    @QtCore.pyqtSlot()
+    def chooseMRLS(self):
+        self.fpath_mrls = QtGui.QFileDialog.getOpenFileName(self, u'选取已调制参考光')
+
+    @QtCore.pyqtSlot()
+    def chooseURLS(self):
+        self.fpath_urls = QtGui.QFileDialog.getOpenFileName(self, u'选取未调制参考光')
+
+    @QtCore.pyqtSlot()
+    def chooseMLS(self):
+        self.fpath_mls = QtGui.QFileDialog.getOpenFileName(self, u'选取实测光谱')
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
