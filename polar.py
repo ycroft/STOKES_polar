@@ -2,9 +2,16 @@ import spec
 import os
 import sys,getopt
 import reporter
+from PyQt4 import QtCore
 
-class Polar(object):
+class Polar(QtCore.QThread):
+    
+    missionStart = QtCore.pyqtSignal()
+    missionComplete = QtCore.pyqtSignal()
+    missionFailed = QtCore.pyqtSignal()
+
     def __init__(self):
+        QtCore.QThread.__init__(self)
         self.globalConfig = {
             'mf': True,
             'ns': 1024,
@@ -14,13 +21,14 @@ class Polar(object):
             'freq': 'high',
             'urls': '',
             'mrls': '',
-            'rls': ''
+            'mls': ''
         }
 
     def config(self, conf):
         self.globalConfig = conf
 
-    def start(self):
+    def startup(self):
+        self.emit(QtCore.SIGNAL('missionStart()'))
         '''
             config :
                 --ns        default
@@ -30,7 +38,7 @@ class Polar(object):
                 --frequency default
                 ==mrls     NOT NULL
                 ==urls     NOT NULL
-                ==rls     NOT NULL
+                ==mls     NOT NULL
         '''
         self.calcMf = self.globalConfig.get('mf',True)
         self.NS = self.globalConfig.get('ns',1024)
@@ -40,14 +48,18 @@ class Polar(object):
         self.frequency = self.globalConfig.get('freq','high')
         self.sdataPath = self.globalConfig.get('mrls', '')
         self.idataPath = self.globalConfig.get('urls', '')
-        self.rdataPath = self.globalConfig.get('rls', '')
+        self.rdataPath = self.globalConfig.get('mls', '')
 
         self.sdataName = (self.sdataPath.split('/')[-1]).split('.')[0]
         self.rdataName = (self.rdataPath.split('/')[-1]).split('.')[0]
         self.workpath = './spec_data/'
 
+        print self.sdataPath
+        print self.idataPath
+        print self.rdataPath
         if self.sdataName=='' or self.rdataName=='':
             print('INPUT FILE NOT FOUND')
+            self.emit(QtCore.SIGNAL('missionFailed()'))
             return
         if self.workpath[-1] != '/':
             self.workpath += '/'
@@ -90,6 +102,10 @@ class Polar(object):
         self.doSi()
         self.doDop()
         self.plotDop()
+        self.emit(QtCore.SIGNAL('missionComplete()'))
+
+    def run(self):
+        self.startup()
 
     def exportCsx(self):
         sdata = spec.df.SpectrumData(self.sdataPath)
