@@ -22,7 +22,7 @@ class MainWidget(QtGui.QWidget):
         self.fpath_mrls = ''
         self.fpath_urls = ''
         self.fpath_mls = ''
-        self.sapp = Polar()
+        self.sapp = Polar(self)
 
     def setupUI(self):
         # 定义组件
@@ -104,7 +104,7 @@ class MainWidget(QtGui.QWidget):
 
         # 设置信号与槽
         self.connect(self.button_start, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('startup()'))
-        self.connect(self.button_exit, QtCore.SIGNAL('clicked()'), QtGui.qApp, QtCore.SLOT('quit()'))
+        self.connect(self.button_exit, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('exit()'))
         self.connect(self.button_fopen_mrefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMRLS()'))
         self.connect(self.button_fopen_urefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseURLS()'))
         self.connect(self.button_fopen_meassure, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMLS()'))
@@ -124,6 +124,11 @@ class MainWidget(QtGui.QWidget):
         else:
             self.label_isset_urefer.setText(u'已禁用')
             self.label_isset_mrefer.setText(u'已禁用')
+
+    @QtCore.pyqtSlot()
+    def exit(self):
+        self.sapp.exit()
+        QtGui.qApp.quit()
 
     @QtCore.pyqtSlot()
     def chooseMRLS(self):

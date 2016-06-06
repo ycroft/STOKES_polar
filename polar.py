@@ -10,8 +10,8 @@ class Polar(QtCore.QThread):
     missionComplete = QtCore.pyqtSignal()
     missionFailed = QtCore.pyqtSignal()
 
-    def __init__(self):
-        QtCore.QThread.__init__(self)
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
         self.globalConfig = {
             'mf': True,
             'ns': 1024,
@@ -101,7 +101,12 @@ class Polar(QtCore.QThread):
         self.importCsx()
         self.doSi()
         self.doDop()
-        self.plotDop()
+        self.savePlotRaw()
+        self.savePlotCsi()
+        self.savePlotFft()
+        self.savePlotFai()
+        self.savePlotSi()
+        self.savePlotDop()
         self.emit(QtCore.SIGNAL('missionComplete()'))
 
     def run(self):
@@ -215,7 +220,7 @@ class Polar(QtCore.QThread):
     def doDop(self):
         self.dop = (((self.s1**2.0) + (self.s2**2.0) + (self.s3**2.0))**0.5)/self.s0
 
-    def plotRaw(self):
+    def savePlotRaw(self):
         dg = spec.plot.Datagram({
             'title' : 'spectrum data of ' + self.rdataName,
             'xlabel': 'wave number(cm-1)',
@@ -232,7 +237,7 @@ class Polar(QtCore.QThread):
         dg.save(self.imgPath + self.rdataName + '_' + 'rd')
         # dg.show()
 
-    def plotCsi(self):
+    def savePlotCsi(self):
         cs0 = spec.plot.Datagram({
             'title' : 'modulation factor 0',
             'xlabel': 'wave number(cm-1)',
@@ -279,7 +284,7 @@ class Polar(QtCore.QThread):
         }
         cs2.add(self.cs2,style_cs2)
         cs2.save(self.imgPath + self.sdataName + '_' + 'cs2')
-        cs2.show()
+        # cs2.show()
 
         cs3 = spec.plot.Datagram({
             'title' : 'modulation factor 3',
@@ -297,7 +302,7 @@ class Polar(QtCore.QThread):
         cs3.save(self.imgPath + self.sdataName + '_' + 'cs3')
         # cs3.show()
 
-    def plotFft(self):
+    def savePlotFft(self):
         datagram = spec.plot.Datagram({
             'title' : 'FFT signal',
             'xlabel': ' ',
@@ -341,7 +346,7 @@ class Polar(QtCore.QThread):
         datagram.save(self.imgPath + self.rdataName + '_' + 'fft')
         # datagram.show()
 
-    def plotFai(self):
+    def savePlotFai(self):
         fa0 = spec.plot.Datagram({
             'title' : 'modulation signal 0 of ' + self.rdataName,
             'xlabel': 'wave number(cm-1)',
@@ -403,7 +408,7 @@ class Polar(QtCore.QThread):
         fa3.save(self.imgPath + self.rdataName + '_' + 'fa3')
         # fa3.show()
 
-    def plotSi(self):
+    def savePlotSi(self):
         ds0 = spec.plot.Datagram({
             'title' : 'S_0 of ' + self.rdataName,
             'xlabel': 'wave number(cm-1)',
@@ -465,7 +470,7 @@ class Polar(QtCore.QThread):
         ds3.save(self.imgPath + self.rdataName + '_' + 's3')
         # ds3.show()
 
-    def plotDop(self):
+    def savePlotDop(self):
         datagram = spec.plot.Datagram({
             'title' : 'DOP/WN of ' + self.rdataName,
             'xlabel': 'wave number(cm-1)',
@@ -494,7 +499,7 @@ class Polar(QtCore.QThread):
         #     datagram.add(theoData,style_theo)
         # datagram.lim(12000,19000,0.09,0.75)
         datagram.save(self.imgPath + self.rdataName + '_' + 'dop')
-        datagram.show()
+        # datagram.show()
 
 # if __name__ == '__main__':
 #     
