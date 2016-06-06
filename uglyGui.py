@@ -2,17 +2,20 @@
 
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+from polar import Polar
 import sys
-import polar
 
 class MainWidget(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self,parent)
+        self.setupUI()
+        self.setupCore()
+    
+    def setupCore(self):
         self.fpath_mrls = ''
         self.fpath_urls = ''
         self.fpath_rls = ''
-
-        self.setupUI()
+        self.sapp = Polar()
 
     def setupUI(self):
         # 定义组件
@@ -31,32 +34,57 @@ class MainWidget(QtGui.QWidget):
         self.label_isset_mrefer = QtGui.QLabel(u'未设置')
         self.label_isset_meassure = QtGui.QLabel(u'未设置')
         self.label_title_plot = QtGui.QLabel(u'绘制图像')
+        self.label_conf_ns = QtGui.QLabel(u'插值点数: 2^')
+        self.label_conf_lens_1 = QtGui.QLabel(u'LENS_1:')
+        self.label_conf_lens_2 = QtGui.QLabel(u'LENS_2:')
+        self.lineedit_conf_ns = QtGui.QLineEdit()
+        self.lineedit_conf_lens_1 = QtGui.QLineEdit()
+        self.lineedit_conf_lens_2 = QtGui.QLineEdit()
+        self.checkbox_conf_autofix = QtGui.QCheckBox(u'载波自动修正')
+        self.checkbox_conf_highfreq = QtGui.QCheckBox(u'使用高频成分')
         self.checkbox_mf = QtGui.QCheckBox(u'重新计算载波')
+
+        self.lineedit_conf_ns.setText('10')
+        self.lineedit_conf_lens_1.setText('1.9')
+        self.lineedit_conf_lens_2.setText('3.6')
         self.checkbox_mf.setCheckState(2)
+        self.checkbox_conf_autofix.setCheckState(2)
+        self.checkbox_conf_highfreq.setCheckState(2)
+
 
         # 设置布局
         layout_main = QtGui.QVBoxLayout()
         layout_settings = QtGui.QVBoxLayout()
         layout_buttons = QtGui.QHBoxLayout()
-        layout_refers = QtGui.QGridLayout()
+        layout_settings_grid = QtGui.QGridLayout()
 
-        layout_refers.addWidget(self.label_isset_urefer,0,0,1,1)
-        layout_refers.addWidget(self.label_isset_mrefer,1,0,1,1)
-        layout_refers.addWidget(self.button_fopen_urefer,0,1,1,1)
-        layout_refers.addWidget(self.button_fopen_mrefer,1,1,1,1)
-        layout_refers.addWidget(self.checkbox_mf,2,0,1,2)
-        layout_refers.addWidget(self.label_isset_meassure,3,0,1,1)
-        layout_refers.addWidget(self.button_fopen_meassure,3,1,1,1)
-        layout_refers.addWidget(self.label_title_plot,4,0,1,2)
-        layout_refers.addWidget(self.button_plot_mls,5,0,1,1)
-        layout_refers.addWidget(self.button_plot_mf,6,0,1,1)
-        layout_refers.addWidget(self.button_plot_dop,7,0,1,1)
-        layout_refers.addWidget(self.button_plot_af,5,1,1,1)
-        layout_refers.addWidget(self.button_plot_ch,6,1,1,1)
-        layout_refers.addWidget(self.button_plot_sv,7,1,1,1)
-        layout_refers.setColumnStretch(2, 1);
+        layout_settings_grid.addWidget(self.label_isset_urefer,0,0,1,1)
+        layout_settings_grid.addWidget(self.label_isset_mrefer,1,0,1,1)
+        layout_settings_grid.addWidget(self.button_fopen_urefer,0,1,1,1)
+        layout_settings_grid.addWidget(self.button_fopen_mrefer,1,1,1,1)
+        layout_settings_grid.addWidget(self.checkbox_mf,2,0,1,2)
+        layout_settings_grid.addWidget(self.label_isset_meassure,3,0,1,1)
+        layout_settings_grid.addWidget(self.button_fopen_meassure,3,1,1,1)
 
-        layout_settings.addLayout(layout_refers)
+        layout_settings_grid.addWidget(self.label_conf_ns,4,0,1,1)
+        layout_settings_grid.addWidget(self.label_conf_lens_1,5,0,1,1)
+        layout_settings_grid.addWidget(self.label_conf_lens_2,6,0,1,1)
+        layout_settings_grid.addWidget(self.lineedit_conf_ns,4,1,1,1)
+        layout_settings_grid.addWidget(self.lineedit_conf_lens_1,5,1,1,1)
+        layout_settings_grid.addWidget(self.lineedit_conf_lens_2,6,1,1,1)
+        layout_settings_grid.addWidget(self.checkbox_conf_autofix,7,0,1,2)
+        layout_settings_grid.addWidget(self.checkbox_conf_highfreq,8,0,1,2)
+
+        layout_settings_grid.addWidget(self.label_title_plot,9,0,1,2)
+        layout_settings_grid.addWidget(self.button_plot_mls,10,0,1,1)
+        layout_settings_grid.addWidget(self.button_plot_mf,11,0,1,1)
+        layout_settings_grid.addWidget(self.button_plot_dop,12,0,1,1)
+        layout_settings_grid.addWidget(self.button_plot_af,10,1,1,1)
+        layout_settings_grid.addWidget(self.button_plot_ch,11,1,1,1)
+        layout_settings_grid.addWidget(self.button_plot_sv,12,1,1,1)
+        layout_settings_grid.setColumnStretch(2, 1);
+
+        layout_settings.addLayout(layout_settings_grid)
         layout_settings.addStretch(1)
         layout_buttons.addStretch(1)
         layout_buttons.addWidget(self.button_start)
@@ -95,6 +123,10 @@ class MainWidget(QtGui.QWidget):
     @QtCore.pyqtSlot()
     def chooseMLS(self):
         self.fpath_mls = QtGui.QFileDialog.getOpenFileName(self, u'选取实测光谱')
+
+    @QtCore.pyqtSlot()
+    def startup(self):
+        self.sapp.start()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
