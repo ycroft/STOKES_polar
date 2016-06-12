@@ -22,7 +22,7 @@ class MainWidget(QtGui.QWidget):
         self.fpath_mrls = ''
         self.fpath_urls = ''
         self.fpath_mls = ''
-        self.sapp = Polar(self)
+        self.sapp = Polar()
 
     def setupUI(self):
         # 定义组件
@@ -109,9 +109,6 @@ class MainWidget(QtGui.QWidget):
         self.connect(self.button_fopen_urefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseURLS()'))
         self.connect(self.button_fopen_meassure, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMLS()'))
         self.connect(self.checkbox_mf, QtCore.SIGNAL('stateChanged(int)'), self, QtCore.SLOT('disableRefer()'))
-        self.connect(self.sapp, QtCore.SIGNAL('missionStart()'), self, QtCore.SLOT('statusStart()'))
-        self.connect(self.sapp, QtCore.SIGNAL('missionComplete()'), self, QtCore.SLOT('statusComplete()'))
-        self.connect(self.sapp, QtCore.SIGNAL('missionFailed()'), self, QtCore.SLOT('statusFailed()'))
 
     @QtCore.pyqtSlot()
     def disableRefer(self):
@@ -127,7 +124,6 @@ class MainWidget(QtGui.QWidget):
 
     @QtCore.pyqtSlot()
     def exit(self):
-        self.sapp.exit(0)
         QtGui.qApp.quit()
 
     @QtCore.pyqtSlot()
@@ -147,12 +143,13 @@ class MainWidget(QtGui.QWidget):
 
     @QtCore.pyqtSlot()
     def startup(self):
+        self.label_status.setText(u'*运行*')
         mf = self.checkbox_mf.isChecked()
         ns = 1024
         d1 = (float)(self.lineedit_conf_lens_1.text())
         d2 = (float)(self.lineedit_conf_lens_2.text())
         autofix = self.checkbox_conf_autofix.isChecked()
-        if self.checkbox_conf_highfreq:
+        if self.checkbox_conf_highfreq.isChecked():
             freq = 'high'
         else:
             freq = 'low'
@@ -172,30 +169,7 @@ class MainWidget(QtGui.QWidget):
         }
         self.sapp.config(conf)
         self.sapp.start()
-    
-    @QtCore.pyqtSlot()
-    def statusStart(self):
-        self.status = 1
-        self.renewStatus()
-
-    @QtCore.pyqtSlot()
-    def statusComplete(self):
-        self.status = 0
-        self.renewStatus()
-
-    @QtCore.pyqtSlot()
-    def statusFailed(self):
-        self.status = -1
-        self.renewStatus()
-
-    @QtCore.pyqtSlot()
-    def renewStatus(self):
-        if self.status == 0:
-            self.label_status.setText(u'=等待=')
-        elif self.status == 1:
-            self.label_status.setText(u'=运行=')
-        elif self.status == -1:
-            self.label_status.setText(u'=错误=')
+        self.label_status.setText(u'=等待=')
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

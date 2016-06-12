@@ -2,16 +2,14 @@ import spec
 import os
 import sys,getopt
 import reporter
-from PyQt4 import QtCore
 
-class Polar(QtCore.QThread):
+class Polar:
     
-    missionStart = QtCore.pyqtSignal()
-    missionComplete = QtCore.pyqtSignal()
-    missionFailed = QtCore.pyqtSignal()
+    # missionStart = QtCore.pyqtSignal()
+    # missionComplete = QtCore.pyqtSignal()
+    # missionFailed = QtCore.pyqtSignal()
 
-    def __init__(self, parent):
-        QtCore.QThread.__init__(self, parent)
+    def __init__(self):
         self.globalConfig = {
             'mf': True,
             'ns': 1024,
@@ -28,7 +26,7 @@ class Polar(QtCore.QThread):
         self.globalConfig = conf
 
     def startup(self):
-        self.emit(QtCore.SIGNAL('missionStart()'))
+        # self.emit(QtCore.SIGNAL('missionStart()'))
         '''
             config :
                 --ns        default
@@ -56,11 +54,11 @@ class Polar(QtCore.QThread):
 
         if self.rdataName=='' and self.calcMf:
             print('MF DATA FILE NOT FOUND')
-            self.emit(QtCore.SIGNAL('missionFailed()'))
+            # self.emit(QtCore.SIGNAL('missionFailed()'))
             return
         if self.rdataName=='':
             print('RAW DATA FILE NOT FOUND')
-            self.emit(QtCore.SIGNAL('missionFailed()'))
+            # self.emit(QtCore.SIGNAL('missionFailed()'))
             return
         if self.workpath[-1] != '/':
             self.workpath += '/'
@@ -108,11 +106,10 @@ class Polar(QtCore.QThread):
         self.savePlotFai()
         self.savePlotSi()
         self.savePlotDop()
-        self.emit(QtCore.SIGNAL('missionComplete()'))
+        # self.emit(QtCore.SIGNAL('missionComplete()'))
 
-    def run(self):
+    def start(self):
         self.startup()
-        self.exit(0)
 
     def exportCsx(self):
         sdata = spec.df.SpectrumData(self.sdataPath)
@@ -209,6 +206,7 @@ class Polar(QtCore.QThread):
         s3n = s23n.imag()
 
         if self.frequency == 'high':
+            print 'HIGH'
             self.s0 = s0
             self.s1 = s1
             self.s2 = s2n
@@ -501,7 +499,7 @@ class Polar(QtCore.QThread):
         #     datagram.add(theoData,style_theo)
         # datagram.lim(12000,19000,0.09,0.75)
         datagram.save(self.imgPath + self.rdataName + '_' + 'dop')
-        # datagram.show()
+        #datagram.show()
 
 # if __name__ == '__main__':
 #     
