@@ -2,7 +2,7 @@ import re
 import numpy as np
 import scipy.interpolate as itp
 
-class SpectrumData(object):
+class SpectrumData:
 	def __init__(self, *args):
 		self.index = -1;
 		if len(args) == 0 :

@@ -4,6 +4,7 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 from polar import Polar
 import sys
+import pylab
 
 class MainWidget(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -108,7 +109,65 @@ class MainWidget(QtGui.QWidget):
         self.connect(self.button_fopen_mrefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMRLS()'))
         self.connect(self.button_fopen_urefer, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseURLS()'))
         self.connect(self.button_fopen_meassure, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('chooseMLS()'))
+        self.connect(self.button_plot_sv, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotSV()'))
+        self.connect(self.button_plot_ch, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotCHX()'))
+        self.connect(self.button_plot_af, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotFFTX()'))
+        self.connect(self.button_plot_dop, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotDOP()'))
+        self.connect(self.button_plot_mf, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotMF()'))
+        self.connect(self.button_plot_mls, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotMLS()'))
         self.connect(self.checkbox_mf, QtCore.SIGNAL('stateChanged(int)'), self, QtCore.SLOT('disableRefer()'))
+
+    def figPlot(self, datagram, title='', color='black'):
+        fig = pylab.figure(title)
+        pylab.plot(datagram.getXaxis(),datagram.getYaxis(),label=title,color=color,linestyle='-')
+
+    @QtCore.pyqtSlot()
+    def plotDOP(self):
+        pylab.close()
+        self.figPlot(self.sapp.dop,'DOP', 'blue')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotSV(self):
+        pylab.close()
+        self.figPlot(self.sapp.s0, 'STOKES VECTOR 0', 'red')
+        self.figPlot(self.sapp.s1, 'STOKES VECTOR 1', 'black')
+        self.figPlot(self.sapp.s2, 'STOKES VECTOR 2', 'blue')
+        self.figPlot(self.sapp.s3, 'STOKES VECTOR 3', 'green')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotFFTX(self):
+        pylab.close()
+        pylab.plot(self.sapp.rffti[0].getXaxis(),self.sapp.rffti[0].getYaxis(),label='FFT CHANNEL 0')
+        pylab.plot(self.sapp.rffti[1].getXaxis(),self.sapp.rffti[1].getYaxis(),label='FFT CHANNEL 1')
+        pylab.plot(self.sapp.rffti[2].getXaxis(),self.sapp.rffti[2].getYaxis(),label='FFT CHANNEL 2')
+        pylab.plot(self.sapp.rffti[3].getXaxis(),self.sapp.rffti[3].getYaxis(),label='FFT CHANNEL 3')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotMF(self):
+        pylab.close()
+        self.figPlot(self.sapp.cs0, 'MODULATION FACTOR 0', 'red')
+        self.figPlot(self.sapp.cs1, 'MODULATION FACTOR 1', 'black')
+        self.figPlot(self.sapp.cs2, 'MODULATION FACTOR 2', 'blue')
+        self.figPlot(self.sapp.cs3, 'MODULATION FACTOR 3', 'green')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotCHX(self):
+        pylab.close()
+        self.figPlot(self.sapp.fa0, 'CHANNEL 0', 'red')
+        self.figPlot(self.sapp.fa1, 'CHANNEL 1', 'black')
+        self.figPlot(self.sapp.fa2, 'CHANNEL 2', 'blue')
+        self.figPlot(self.sapp.fa3, 'CHANNEL 3', 'green')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotMLS(self):
+        pylab.close()
+        self.figPlot(self.sapp.rdata, 'MEASURED DATA', 'blue')
+        pylab.show()
 
     @QtCore.pyqtSlot()
     def disableRefer(self):
