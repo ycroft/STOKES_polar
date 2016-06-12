@@ -127,7 +127,7 @@ class MainWidget(QtGui.QWidget):
 
     @QtCore.pyqtSlot()
     def exit(self):
-        self.sapp.exit()
+        self.sapp.exit(0)
         QtGui.qApp.quit()
 
     @QtCore.pyqtSlot()

@@ -54,11 +54,12 @@ class Polar(QtCore.QThread):
         self.rdataName = (self.rdataPath.split('/')[-1]).split('.')[0]
         self.workpath = './spec_data/'
 
-        print self.sdataPath
-        print self.idataPath
-        print self.rdataPath
-        if self.sdataName=='' or self.rdataName=='':
-            print('INPUT FILE NOT FOUND')
+        if self.rdataName=='' and self.calcMf:
+            print('MF DATA FILE NOT FOUND')
+            self.emit(QtCore.SIGNAL('missionFailed()'))
+            return
+        if self.rdataName=='':
+            print('RAW DATA FILE NOT FOUND')
             self.emit(QtCore.SIGNAL('missionFailed()'))
             return
         if self.workpath[-1] != '/':
@@ -111,6 +112,7 @@ class Polar(QtCore.QThread):
 
     def run(self):
         self.startup()
+        self.exit(0)
 
     def exportCsx(self):
         sdata = spec.df.SpectrumData(self.sdataPath)
