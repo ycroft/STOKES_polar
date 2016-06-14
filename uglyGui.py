@@ -5,6 +5,7 @@ from PyQt4 import QtGui
 from polar import Polar
 import sys
 import pylab
+import warnings
 
 class MainWidget(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -38,6 +39,10 @@ class MainWidget(QtGui.QWidget):
         self.button_plot_ch = QtGui.QPushButton(u'调制各通道')
         self.button_plot_sv = QtGui.QPushButton(u'STOKES矢量')
         self.button_plot_dop = QtGui.QPushButton(u'偏振')
+        self.button_plot_urls = QtGui.QPushButton(u'未调制参考光')
+        self.button_plot_mrls = QtGui.QPushButton(u'已调制参考光')
+        self.button_plot_nsv = QtGui.QPushButton(u'归一化矢量')
+        self.button_plot_sffti = QtGui.QPushButton(u'参考光自相关')
         self.label_isset_urefer = QtGui.QLabel(u'未设置')
         self.label_isset_mrefer = QtGui.QLabel(u'未设置')
         self.label_isset_meassure = QtGui.QLabel(u'未设置')
@@ -91,6 +96,10 @@ class MainWidget(QtGui.QWidget):
         layout_settings_grid.addWidget(self.button_plot_af,10,1,1,1)
         layout_settings_grid.addWidget(self.button_plot_ch,11,1,1,1)
         layout_settings_grid.addWidget(self.button_plot_sv,12,1,1,1)
+        layout_settings_grid.addWidget(self.button_plot_mrls,13,0,1,1)
+        layout_settings_grid.addWidget(self.button_plot_urls,13,1,1,1)
+        layout_settings_grid.addWidget(self.button_plot_sffti,14,0,1,1)
+        layout_settings_grid.addWidget(self.button_plot_nsv,14,1,1,1)
         layout_settings_grid.setColumnStretch(2, 1);
 
         layout_settings.addLayout(layout_settings_grid)
@@ -115,6 +124,10 @@ class MainWidget(QtGui.QWidget):
         self.connect(self.button_plot_dop, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotDOP()'))
         self.connect(self.button_plot_mf, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotMF()'))
         self.connect(self.button_plot_mls, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotMLS()'))
+        self.connect(self.button_plot_urls, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotURLS()'))
+        self.connect(self.button_plot_mrls, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotMRLS()'))
+        self.connect(self.button_plot_nsv, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotNSV()'))
+        self.connect(self.button_plot_sffti, QtCore.SIGNAL('clicked()'), self, QtCore.SLOT('plotSFFTX()'))
         self.connect(self.checkbox_mf, QtCore.SIGNAL('stateChanged(int)'), self, QtCore.SLOT('disableRefer()'))
 
     def figPlot(self, datagram, title='', color='black'):
@@ -167,6 +180,35 @@ class MainWidget(QtGui.QWidget):
     def plotMLS(self):
         pylab.close()
         self.figPlot(self.sapp.rdata, 'MEASURED DATA', 'blue')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotMRLS(self):
+        pylab.close()
+        self.figPlot(self.sapp.sdata, 'MODULATED REFERENCE LIGHT SPECTRUM', 'blue')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotURLS(self):
+        pylab.close()
+        self.figPlot(self.sapp.idata, 'MODULATED REFERENCE LIGHT SPECTRUM', 'blue')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotNSV(self):
+        pylab.close()
+        self.figPlot(self.sapp.nsv1, 'NOMALIZED STOKES VECTOR 1', 'red')
+        self.figPlot(self.sapp.nsv2, 'NOMALIZED STOKES VECTOR 2', 'green')
+        self.figPlot(self.sapp.nsv3, 'NOMALIZED STOKES VECTOR 3', 'blue')
+        pylab.show()
+
+    @QtCore.pyqtSlot()
+    def plotSFFTX(self):
+        pylab.close()
+        pylab.plot(self.sapp.sffti[0].getXaxis(),self.sapp.sffti[0].getYaxis(),label='RLS FFT CHANNEL 0')
+        pylab.plot(self.sapp.sffti[1].getXaxis(),self.sapp.sffti[1].getYaxis(),label='RLS FFT CHANNEL 1')
+        pylab.plot(self.sapp.sffti[2].getXaxis(),self.sapp.sffti[2].getYaxis(),label='RLS FFT CHANNEL 2')
+        pylab.plot(self.sapp.sffti[3].getXaxis(),self.sapp.sffti[3].getYaxis(),label='RLS FFT CHANNEL 3')
         pylab.show()
 
     @QtCore.pyqtSlot()
@@ -228,9 +270,11 @@ class MainWidget(QtGui.QWidget):
         }
         self.sapp.config(conf)
         self.sapp.start()
+        print('***DONE***')
         self.label_status.setText(u'=等待=')
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")
     app = QtGui.QApplication(sys.argv)
     mw = MainWidget()
     mw.show()

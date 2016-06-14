@@ -112,12 +112,12 @@ class Polar:
         self.startup()
 
     def exportCsx(self):
-        sdata = spec.df.SpectrumData(self.sdataPath)
+        self.sdata = spec.df.SpectrumData(self.sdataPath)
         outputName = self.workpath + '_auto'
-        sdata.scaleX(1E-7)
-        sdata.reciprocalX()
-        sdomain = sdata.getXdomain()
-        self.sfft = sfft = spec.fft.fft(sdata,self.NS)
+        self.sdata.scaleX(1E-7)
+        self.sdata.reciprocalX()
+        sdomain = self.sdata.getXdomain()
+        self.sfft = sfft = spec.fft.fft(self.sdata,self.NS)
         checkfft = sfft.abs()
         # checkfft.slice(0.5)
         sfeature = spec.reco.Feature(checkfft)
@@ -131,15 +131,15 @@ class Polar:
         ms3 = spec.fft.ifft(sffti[3],sdomain,self.NS)
         msx = ms0.getXaxis()
 
-        idata = spec.df.SpectrumData(self.idataPath)
-        idata.scaleX(1E-7)
-        idata.reciprocalX()
-        idata.spline(msx)
+        self.idata = spec.df.SpectrumData(self.idataPath)
+        self.idata.scaleX(1E-7)
+        self.idata.reciprocalX()
+        self.idata.spline(msx)
 
-        tmpcs0 = ms0/idata
-        tmpcs1 = (ms1*(2.0**0.5))/idata
-        tmpcs2 = (ms2*(2.0**0.5))/idata
-        tmpcs3 = ((ms3*(2.0**0.5))*-1.0)/idata
+        tmpcs0 = ms0/self.idata
+        tmpcs1 = (ms1*(2.0**0.5))/self.idata
+        tmpcs2 = (ms2*(2.0**0.5))/self.idata
+        tmpcs3 = ((ms3*(2.0**0.5))*-1.0)/self.idata
 
         tmpcs0.formatExport(outputName+'.scs0')
         tmpcs1.formatExport(outputName+'.scs1')
@@ -216,6 +216,10 @@ class Polar:
             self.s1 = s1
             self.s2 = s2
             self.s3 = s3
+
+        self.nsv1 = s1/s0
+        self.nsv2 = s2/s0
+        self.nsv3 = s3/s0
 
     def doDop(self):
         self.dop = (((self.s1**2.0) + (self.s2**2.0) + (self.s3**2.0))**0.5)/self.s0
