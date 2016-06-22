@@ -105,6 +105,7 @@ class Polar:
         self.savePlotFft()
         self.savePlotFai()
         self.savePlotSi()
+        self.savePlotNsi()
         self.savePlotDop()
         # self.emit(QtCore.SIGNAL('missionComplete()'))
 
@@ -472,6 +473,54 @@ class Polar:
         }
         ds3.add(self.s3,style_ds3)
         ds3.save(self.imgPath + self.rdataName + '_' + 's3')
+        # ds3.show()
+
+    def savePlotNsi(self):
+        # ds0.show()
+        ds1 = spec.plot.Datagram({
+            'title' : 'S_1 of ' + self.rdataName,
+            'xlabel': 'wave number(cm-1)',
+            'ylabel': ' ',
+            'grid' : True
+        })
+        style_ds1 = {
+            'color' : 'g',
+            'label' : 'S_1',
+            'linewidth' : 1.5,
+            'linestyle' : '-'
+        }
+        ds1.add(self.nsv1,style_ds1)
+        ds1.save(self.imgPath + self.rdataName + '_' + 'nsv1')
+        # ds1.show()
+        ds2 = spec.plot.Datagram({
+            'title' : 'S_2 of ' + self.rdataName,
+            'xlabel': 'wave number(cm-1)',
+            'ylabel': ' ',
+            'grid' : True
+        })
+        style_ds2 = {
+            'color' : 'b',
+            'label' : 'S_2',
+            'linewidth' : 1.5,
+            'linestyle' : '-'
+        }
+        ds2.add(self.nsv2,style_ds2)
+        ds2.save(self.imgPath + self.rdataName + '_' + 'nsv2')
+        # ds2.show()
+        ds3 = spec.plot.Datagram({
+            'title' : 'S_3 of ' + self.rdataName,
+            'xlabel': 'wave number(cm-1)',
+            'ylabel': ' ',
+            'grid' : True
+        })
+        style_ds3 = {
+            'color' : 'm',
+            'label' : 'S_3',
+            'linewidth' : 1.5,
+            'linestyle' : '-'
+        }
+        ds3.add(self.nsv3,style_ds3)
+        ds3.save(self.imgPath + self.rdataName + '_' + 'nsv3')
         # ds3.show()
 
     def savePlotDop(self):
