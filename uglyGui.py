@@ -246,7 +246,7 @@ class MainWidget(QtGui.QWidget):
     def startup(self):
         self.label_status.setText(u'*运行*')
         mf = self.checkbox_mf.isChecked()
-        ns = 1024
+        ns = 2**(int)(self.lineedit_conf_ns.text());
         d1 = (float)(self.lineedit_conf_lens_1.text())
         d2 = (float)(self.lineedit_conf_lens_2.text())
         autofix = self.checkbox_conf_autofix.isChecked()

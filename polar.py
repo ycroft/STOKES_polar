@@ -1,7 +1,11 @@
+#coding=utf8
 import spec
 import os
 import sys,getopt
 import reporter
+
+def logMsg(msg):
+    print(msg)
 
 class Polar:
     
@@ -170,6 +174,8 @@ class Polar:
         for line in content:
             x = line.split(' ')
             self.windows.append([float(x[0]),float(x[1])])
+        #logMsg(u'读入载波点数' + self.cs0.length)
+        logMsg(u'读入载波点数')
 
     def doSi(self):
         k_0 = self.cs0
