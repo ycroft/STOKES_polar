@@ -93,3 +93,4 @@ if __name__ == '__main__':
     pw = PlotWidget(app)
     pw.start()
     sys.exit(app.exec_())
+

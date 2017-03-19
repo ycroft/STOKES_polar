@@ -279,3 +279,4 @@ if __name__ == '__main__':
     mw = MainWidget()
     mw.show()
     sys.exit(app.exec_())
+

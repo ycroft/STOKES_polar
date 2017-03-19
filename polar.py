@@ -124,6 +124,7 @@ class Polar:
         sdomain = self.sdata.getXdomain()
         self.sfft = sfft = spec.fft.fft(self.sdata,self.NS)
         checkfft = sfft.abs()
+        print checkfft
         # checkfft.slice(0.5)
         sfeature = spec.reco.Feature(checkfft)
         sfeature.start(8)
