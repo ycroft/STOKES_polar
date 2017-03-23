@@ -20,7 +20,8 @@ def fft(data, N, **args):
         N = len(y)
     else:
         t = np.linspace(domain[0],domain[1],N)
-        y = itp.spline(np.array(data.getXaxis()),np.array(data.getYaxis()),t)
+        # y = itp.spline(np.array(data.getXaxis()),np.array(data.getYaxis()),t)
+        y = np.interp(t, np.array(data.getXaxis()),np.array(data.getYaxis()))
     n = np.linspace(0,N-1,N)
     fft_y = np.fft.fft(y)
     if absa:

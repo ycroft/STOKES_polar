@@ -124,7 +124,6 @@ class Polar:
         sdomain = self.sdata.getXdomain()
         self.sfft = sfft = spec.fft.fft(self.sdata,self.NS)
         checkfft = sfft.abs()
-        print checkfft
         # checkfft.slice(0.5)
         sfeature = spec.reco.Feature(checkfft)
         sfeature.start(8)
@@ -142,10 +141,15 @@ class Polar:
         self.idata.reciprocalX()
         self.idata.spline(msx)
 
+        _sc_ = self.D2 / self.D1
+        _v_sc_ = self.D2 / self.D1
         tmpcs0 = ms0/self.idata
-        tmpcs1 = (ms1*(2.0**0.5))/self.idata
-        tmpcs2 = (ms2*(2.0**0.5))/self.idata
-        tmpcs3 = ((ms3*(2.0**0.5))*-1.0)/self.idata
+        #tmpcs1 = (ms1*(_sc_**0.5))/self.idata
+        #tmpcs2 = (ms2*(_sc_**0.5))/self.idata
+        #tmpcs3 = ((ms3*(_sc_**0.5))*-1.0)/self.idata
+        tmpcs1 = (ms1*(2**_v_sc_))/self.idata
+        tmpcs2 = (ms2*(2**_v_sc_))/self.idata
+        tmpcs3 = ((ms3*(2**_v_sc_))*-1.0)/self.idata
 
         tmpcs0.formatExport(outputName+'.scs0')
         tmpcs1.formatExport(outputName+'.scs1')
@@ -199,6 +203,7 @@ class Polar:
             theta = tmpd.arg()
             phi2 = theta/2.0
             phi1 = phi2 * (self.D2/self.D1)
+            print self.D1, self.D2
             k_0 = k_0
             k_1 = k_1.rotate(phi2-phi1)
             k_2 = k_2.rotate(phi2)

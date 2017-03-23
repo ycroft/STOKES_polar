@@ -229,17 +229,17 @@ class MainWidget(QtGui.QWidget):
 
     @QtCore.pyqtSlot()
     def chooseMRLS(self):
-        self.fpath_mrls = QtGui.QFileDialog.getOpenFileName(self, u'选取已调制参考光')
+        self.fpath_mrls = QtGui.QFileDialog.getOpenFileName(self, u'选取已调制参考光', '', '', '', QtGui.QFileDialog.DontUseNativeDialog)
         self.label_isset_mrefer.setText(u'已设置')
 
     @QtCore.pyqtSlot()
     def chooseURLS(self):
-        self.fpath_urls = QtGui.QFileDialog.getOpenFileName(self, u'选取未调制参考光')
+        self.fpath_urls = QtGui.QFileDialog.getOpenFileName(self, u'选取未调制参考光', '', '', '', QtGui.QFileDialog.DontUseNativeDialog)
         self.label_isset_urefer.setText(u'已设置')
 
     @QtCore.pyqtSlot()
     def chooseMLS(self):
-        self.fpath_mls = QtGui.QFileDialog.getOpenFileName(self, u'选取实测光谱')
+        self.fpath_mls = QtGui.QFileDialog.getOpenFileName(self, u'选取实测光谱', '', '', '', QtGui.QFileDialog.DontUseNativeDialog)
         self.label_isset_meassure.setText(u'已设置')
 
     @QtCore.pyqtSlot()

@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import re
 import numpy as np
 import scipy.interpolate as itp
@@ -55,9 +57,13 @@ def parseZipFile(file_path, xaxis, yaxis):
             xaxis.append(float(res.group(1)))
     zf.close()
 
-
 class SpectrumData:
     def __init__(self, *args):
+
+        SMART_CONVERT = {
+            u'ProcSpec' : parseZipFile,
+            u'tat': parseFileWithValuePairs,
+        }
         self.index = -1;
         if len(args) == 0 :
             self.__xaxis = []
@@ -65,8 +71,8 @@ class SpectrumData:
         elif len(args) == 1 :
             self.__xaxis = []
             self.__yaxis = []
-            # parseFileWithValuePairs(args[0], self.__xaxis, self.__yaxis)
-            parseZipFile(args[0], self.__xaxis, self.__yaxis)
+            
+            SMART_CONVERT[args[0].split('.')[-1]](args[0], self.__xaxis, self.__yaxis)
             print 'done','length: ',len(self.__xaxis)
         elif len(args) == 2 :
             self.__xaxis = np.array(args[0])
