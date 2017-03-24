@@ -141,15 +141,10 @@ class Polar:
         self.idata.reciprocalX()
         self.idata.spline(msx)
 
-        _sc_ = self.D2 / self.D1
-        _v_sc_ = self.D2 / self.D1
         tmpcs0 = ms0/self.idata
-        #tmpcs1 = (ms1*(_sc_**0.5))/self.idata
-        #tmpcs2 = (ms2*(_sc_**0.5))/self.idata
-        #tmpcs3 = ((ms3*(_sc_**0.5))*-1.0)/self.idata
-        tmpcs1 = (ms1*(2**_v_sc_))/self.idata
-        tmpcs2 = (ms2*(2**_v_sc_))/self.idata
-        tmpcs3 = ((ms3*(2**_v_sc_))*-1.0)/self.idata
+        tmpcs1 = (ms1*(2**0.5))/self.idata
+        tmpcs2 = (ms2*(2**0.5))/self.idata
+        tmpcs3 = ((ms3*(2**0.5))*-1.0)/self.idata
 
         tmpcs0.formatExport(outputName+'.scs0')
         tmpcs1.formatExport(outputName+'.scs1')
