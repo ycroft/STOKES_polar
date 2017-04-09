@@ -50,7 +50,7 @@ def parseZipFile(file_path, xaxis, yaxis):
             continue
     
         if is_pixel:
-            res = re.search('<double>([0-9]+\.[0-9]*)</double>', line)
+            res = re.search('<double>(-?[0-9]+\.[0-9]*)</double>', line)
             yaxis.append(float(res.group(1)))
         elif is_wave_length:
             res = re.search('<double>([0-9]+\.[0-9]*)</double>', line)
